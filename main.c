@@ -19,6 +19,7 @@ char * prompt(){
   char buffer[256];
   getcwd(buffer, 256);
   printf("%s $ ", buffer);
+  //i think fflush is supposed to go here maybe idk.........
   char * line_buff = (char*)calloc(256, sizeof(char));
   fgets(line_buff, 255, stdin);
   return line_buff;
