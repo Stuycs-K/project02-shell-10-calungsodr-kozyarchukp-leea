@@ -1,6 +1,15 @@
-#include <unistd.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <fcntl.h>
+#include <string.h>
+#include <sys/types.h>
+#include <dirent.h>
 #include "parse.h"
-#include "main.c"
+#include "main.h"
+
+/******** TO DO: error handling !!!!!!!!!! *********/
+// can use printErr() since main.h is included
+// check execvp work
 
 void redirect(char* line){
     char* args[32];
