@@ -3,7 +3,10 @@
 #include "main.h"
 
 int main(int argc, char *argv[]) {
+
   char ** args = prompt();
+
+  isCommand(args);
 
   pid_t p = fork();
   if(p<0){
@@ -36,4 +39,9 @@ char ** prompt(){
   fgets(line_buff, 255, stdin);
   parse_args(line_buff, args);
   return args;
+}
+
+//checks if args is cd/exit/anything that isn't a program, and executes it.
+int isCommand(char ** args){
+  //if (args(0))
 }

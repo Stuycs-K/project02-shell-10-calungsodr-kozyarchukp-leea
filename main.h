@@ -10,6 +10,6 @@
 #include <errno.h>
 int main(int argc, char *argv[]);
 char ** prompt();
+int isCommand(char ** args);
 
 #endif
-
