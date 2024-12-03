@@ -38,24 +38,43 @@ void redirect(char* line){
         }
     }
 
-    // read commands from input file to stdin
     pid_t p = fork();
 
     if (p == 0){ // child process in fork
+        // this means that it looks like this: a < _.txt
+        // redirect stuff from the file taken from (in read_input) to run into program a
         if (input_file != NULL){
             int read_input = open(input_file, O_RDONLY, 0);
-            if (read_input==-1) err();
-            dup2(read_input, stdin); // read input file to stdin ???
+            if (read_input==-1) printErr();
+            // args[0] would be the program
+            dup2(args[0], read_input);
         }
 
-        // write stdout to new output file
+        // this means that it looks like this: b  > _.txt
+        // redirect stuff from program b output (read_output) into file
         if (output_file != NULL){
             int read_output = open(output_file,  O_WRONLY | O_CREAT | O_TRUNC, 0644);
-            if (read_output==-1) err();
-            dup2(read_output, stdout); // stdout goes to output file ???
+            if (read_output==-1) printErr();
+            // args[1] would be the file
+            dup2(args[1], read_output);
         }
     }
 
-    execvp(args[0], args); // error handling? perror?
+    execvp(args[0], args); // error handling? perror? 
+    // not right, make sure execvp happens after 
 
+/*
+advice from class lessons...
+    int fd1 = open("foo.txt", O_WRONLY);
+    int FILENO = stdout;
+    int backup_stdout = dup( FILENO ) // save stdout for later
+    dup2(fd1, FILENO) //sets FILENO's entry to the file for fd1.
+    printf("TO THE FILE!!!\n");
+    fflush(stdout);//not needed when a child process exits, becaue exiting a process will flush automatically.
+    dup2(backup_stdout, FILENO) //sets FILENO's entry to backup_stdout, which is stdout
+
+Your shell project will need to use dup() and dup2()
+It should be reasonably straight forward that you can implement the redirection operators < or > by changing the 
+input to be a file instead of stdin, or the output to be a file not stdout.
+*/
 }

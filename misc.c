@@ -1,7 +1,7 @@
 #include "misc.h"
 #include "main.h"
 
-//prints char **
+// prints char **
 void printchars(char ** arr){
   printf("[");
   while(*arr!=NULL){

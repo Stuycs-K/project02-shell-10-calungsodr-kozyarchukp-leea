@@ -9,6 +9,7 @@
 #include <sys/stat.h>
 #include <errno.h>
 #include <sys/wait.h>
+int printErr();
 int main(int argc, char *argv[]);
 char ** prompt();
 void piper(char* command1, char* command2);
