@@ -44,6 +44,7 @@ char ** prompt(){
 }
 
 // not done at all, need to fix. figure out directing to files?
+// ***** OK SO im silly and forgot he taught us about this in class.. will come back
 /*
 Implement simple pipes. Only one pipe at a time is required.
 The pipe operator | redirects one program's output to be another program's input. e.g. ls | wc would run ls and use the output from ls as the input for wc.
