@@ -8,6 +8,7 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <errno.h>
+int printErr();
 int main(int argc, char *argv[]);
 char ** prompt();
 

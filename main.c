@@ -45,12 +45,18 @@ char ** prompt(){
 }
 
 // not done at all, need to fix. figure out directing to files?
-// ***** OK SO im silly and forgot he taught us about this in class.. will come back
 /*
 Implement simple pipes. Only one pipe at a time is required.
 The pipe operator | redirects one program's output to be another program's input. e.g. ls | wc would run ls and use the output from ls as the input for wc.
 Check out popen() for the advanced way of doing this, otherwise use a temp file.
+
+run c1 and redirect stdout to a temp file!!!!
+run c2 and redirect the temp file to stdin!!!
+remove the temp file when done!!!
+
 */
+
+// Redirect stdout from one program to stdin of the next.
 void pipe(char* command1, char* command2){
     char* args1[32];
     char* args2[32];
