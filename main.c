@@ -1,6 +1,7 @@
 #include "parse.h"
 #include "misc.h"
 #include "main.h"
+#include "redirect.h"
 
 int printErr(){
   printf("Error %d: %s\n", errno, strerror(errno));
@@ -63,7 +64,9 @@ void pipe(char* command1, char* command2){
 
     pid_t p1 = fork();
     if (p1 == 0){ // child
-        // use the < or > code to write to a file...??? unsure how for now
-        // will figure this out
+        // write output to file, then direct this output into the second arugment... ok so try and use the redirect command from redirect.c...
+        // does this make sense?
+        // should redirect the output into arg2 (after the pipe), then execute thaat
+        redirect("first_output.txt > %s", args2);
     }
 }
