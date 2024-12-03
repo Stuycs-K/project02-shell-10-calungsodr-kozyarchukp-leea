@@ -1,12 +1,12 @@
+run: shell
+	@./shell
 compile shell: parse.o main.o misc.o
 	@gcc -o shell parse.o main.o misc.o
-run:
-	@./shell
-parse.o: parse.c parse.h
+parse.o: parse.c parse.h main.h
 	@gcc -c parse.c
-main.o: main.c parse.h misc.h
+main.o: main.c parse.h misc.h main.h
 	@gcc -c main.c
-misc.o: misc.c misc.h
+misc.o: misc.c misc.h main.h
 	@gcc -c misc.c
 clean:
 	rm *.o

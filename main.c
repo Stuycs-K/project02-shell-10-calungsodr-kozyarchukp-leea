@@ -3,24 +3,37 @@
 #include "main.h"
 
 int main(int argc, char *argv[]) {
-  char * input = prompt();
+  char ** args = prompt();
+
+  pid_t p = fork();
+  if(p<0){
+    perror("forkfail");
+    exit(1);
+  } else if (p==0){
+    //CHILD
+    //execvp here
+  } else if (p>0){
+    //PARENT
+    //wait until child dies then prompt again (i have NO idea how this'll work)
+  }
+
   /*
-  parse_args(line_buff, args);
-  printchars(args);
+  i dunno where to put this
   execvp(args[0], args);
   fflush(stdout);
   */
 }
 
 
-//prints cwd path and takes args. args are returned as a string
-char * prompt(){
-  char * args[16];
+//prints cwd path and parses user input. returns array of args from stdin
+char ** prompt(){
+  char ** args = (char**)calloc(16, sizeof(char*));
   char buffer[256];
   getcwd(buffer, 256);
   printf("%s $ ", buffer);
   //i think fflush is supposed to go here maybe idk.........
   char * line_buff = (char*)calloc(256, sizeof(char));
   fgets(line_buff, 255, stdin);
-  return line_buff;
+  parse_args(line_buff, args);
+  return args;
 }
