@@ -1,8 +1,6 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <fcntl.h>
-#include <unistd.h>
-#include <string.h>
-#include <sys/stat.h>
-#include <errno.h>
+#ifndef PARSE_H
+#define PARSE_H
+
 void parse_args( char * line, char ** arg_ary );
+
+#endif
