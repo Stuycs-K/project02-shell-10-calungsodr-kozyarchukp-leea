@@ -4,8 +4,21 @@
 
 int main(int argc, char *argv[]) {
   char ** args = prompt();
-  printchars(args);
-/*
+
+  pid_t p = fork();
+  if(p<0){
+    perror("forkfail");
+    exit(1);
+  } else if (p==0){
+    //CHILD
+    //execvp here
+  } else if (p>0){
+    //PARENT
+    //wait until child dies then prompt again (i have NO idea how this'll work)
+  }
+
+  /*
+  i dunno where to put this
   execvp(args[0], args);
   fflush(stdout);
   */
