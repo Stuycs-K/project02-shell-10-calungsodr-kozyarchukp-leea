@@ -8,7 +8,8 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <errno.h>
+#include <sys/wait.h>
 int main(int argc, char *argv[]);
 char ** prompt();
-
+void piper(char* command1, char* command2);
 #endif

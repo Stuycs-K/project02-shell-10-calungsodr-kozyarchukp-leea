@@ -44,14 +44,14 @@ void redirect(char* line){
     if (p == 0){ // child process in fork
         if (input_file != NULL){
             int read_input = open(input_file, O_RDONLY, 0);
-            if (read_input==-1) printErr();
+            if (read_input==-1) err();
             dup2(read_input, stdin); // read input file to stdin ???
         }
 
         // write stdout to new output file
         if (output_file != NULL){
             int read_output = open(output_file,  O_WRONLY | O_CREAT | O_TRUNC, 0644);
-            if (read_output==-1) printErr();
+            if (read_output==-1) err();
             dup2(read_output, stdout); // stdout goes to output file ???
         }
     }
