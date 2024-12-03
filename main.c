@@ -1,12 +1,11 @@
 #include "parse.h"
 #include "misc.h"
 #include "main.h"
+#include "commands.h"
 
 int main(int argc, char *argv[]) {
 
   char ** args = prompt();
-
-  isCommand(args);
 
   pid_t p = fork();
   if(p<0){
@@ -43,5 +42,9 @@ char ** prompt(){
 
 //checks if args is cd/exit/anything that isn't a program, and executes it.
 int isCommand(char ** args){
-  //if (args(0))
+  if (equals(args[0], "cd")){
+    cd(args);
+  } else if (equals(args[0], "exit")){
+    exit(1);
+  }
 }
