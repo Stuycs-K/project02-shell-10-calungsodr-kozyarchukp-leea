@@ -4,9 +4,11 @@
 #include "commands.h"
 
 int main(int argc, char *argv[]) {
-
   char ** args = prompt();
-
+  printf("heres args!\n");
+  printchars(args);
+  isCommand(args);
+  /*
   pid_t p = fork();
   if(p<0){
     perror("forkfail");
@@ -42,9 +44,9 @@ char ** prompt(){
 
 //checks if args is cd/exit/anything that isn't a program, and executes it.
 int isCommand(char ** args){
-  if (equals(args[0], "cd")){
+  if (strcmp(args[0], "cd") == 0){
     cd(args);
-  } else if (equals(args[0], "exit")){
+  } else if (strcmp(args[0], "exit")){
     exit(1);
   }
 }
