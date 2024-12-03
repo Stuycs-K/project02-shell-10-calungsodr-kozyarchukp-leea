@@ -1,6 +1,5 @@
 #include "misc.h"
-#include <stdio.h>
-
+#include "main.h"
 
 //prints char **
 void printchars(char ** arr){
