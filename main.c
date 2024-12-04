@@ -52,6 +52,7 @@ remove the temp file when done!!!
 
 */
 // Redirect stdout from one program to stdin of the next.
+/*sorry commenting out for now bc its giving me errors
 void pipe(char* command1, char* command2){
     char* args1[32];
     char* args2[32];
@@ -71,3 +72,4 @@ void pipe(char* command1, char* command2){
         //redirect("first_output.txt > %s", args2);
     }
 }
+*/
