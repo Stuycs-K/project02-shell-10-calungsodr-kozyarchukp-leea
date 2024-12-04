@@ -1,7 +1,7 @@
 #include "misc.h"
 #include "main.h"
 
-//prints char **
+// prints char **
 void printchars(char ** arr){
   printf("[");
   while(*arr!=NULL){
@@ -9,10 +9,4 @@ void printchars(char ** arr){
     arr++;
   }
   printf("]\n");
-}
-
-int err() {
-    printf("errno %d\n", errno);
-    printf("%s\n", strerror(errno));
-    exit(1);
 }

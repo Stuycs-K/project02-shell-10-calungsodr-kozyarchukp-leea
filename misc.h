@@ -2,6 +2,5 @@
 #define MISC_H
 
 void printchars(char ** arr);
-int err();
 
 #endif
