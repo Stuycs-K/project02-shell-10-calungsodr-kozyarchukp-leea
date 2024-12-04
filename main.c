@@ -52,13 +52,9 @@ run c2 and redirect the temp file to stdin!!!
 remove the temp file when done!!!
 
 */
-<<<<<<< HEAD
-void piper(char* command1, char* command2){
-=======
 
 // Redirect stdout from one program to stdin of the next.
 void pipe(char* command1, char* command2){
->>>>>>> raechel
     char* args1[32];
     char* args2[32];
     // copies command into args arrays, separates arguments
