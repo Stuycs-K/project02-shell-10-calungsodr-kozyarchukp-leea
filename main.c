@@ -17,6 +17,7 @@ int main(int argc, char *argv[]) {
             err();
         } else if (p == 0){
             //CHILD
+            args[0] = strsep(&args[0], "\n");
             execvp(args[0], args);
         } else {
             //PARENT - wait until child is done
