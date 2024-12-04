@@ -66,12 +66,12 @@ void redirect(char* line){
 /*
 advice from class lessons...
     int fd1 = open("foo.txt", O_WRONLY);
-    int FILENO = stdout;
-    int backup_stdout = dup( FILENO ) // save stdout for later
-    dup2(fd1, FILENO) //sets FILENO's entry to the file for fd1.
+    int stdout = STDOUT_FILENO;//stdout filenumber is 1, but this makes it clear
+    int backup_stdout = dup( stdout ) // save for later
+    dup2(fd1, stdout); //sets stdout's entry to the file "foo.txt".
     printf("TO THE FILE!!!\n");
     fflush(stdout);//not needed when a child process exits, becaue exiting a process will flush automatically.
-    dup2(backup_stdout, FILENO) //sets FILENO's entry to backup_stdout, which is stdout
+    dup2(backup_stdout, stdout); //sets the stdout entry to backup_stdout, which is the original stdout
 
 Your shell project will need to use dup() and dup2()
 It should be reasonably straight forward that you can implement the redirection operators < or > by changing the 
