@@ -10,3 +10,9 @@ void printchars(char ** arr){
   }
   printf("]\n");
 }
+
+int err() {
+    printf("errno %d\n", errno);
+    printf("%s\n", strerror(errno));
+    exit(1);
+}

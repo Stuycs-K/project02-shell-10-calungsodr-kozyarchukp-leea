@@ -5,10 +5,9 @@
 
 int main(int argc, char *argv[]) {
   char ** args = prompt();
-  printf("heres args!\n");
-  printchars(args);
+
   isCommand(args);
-  /*
+
   pid_t p = fork();
   if(p<0){
     perror("forkfail");

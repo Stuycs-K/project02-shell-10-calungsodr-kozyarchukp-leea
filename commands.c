@@ -3,21 +3,12 @@
 #include "commands.h"
 
 int cd(char ** args){
-  printf("cd time\n");
-  if ((!strcmp(args[0], "cd")) || (args[1] == NULL) || (args[2] != NULL)){
-    printf("this shouldn't happen. either the args don't specify that this is a cd command, there are too little args, or there are too many args.\n");
+  if ((strcmp(args[0], "cd")) || (args[1] == NULL) || (args[2]!=NULL)){
+    printf("this shouldn't happen. usage: cd <directory>.\n");
+    return -1;
   } else{
-    char * path = genPath(args[1]);
-    chdir(path);
+    char * path = strsep(&args[1], "\n");
+    if (chdir(path)==-1)err();
   }
-}
-
-char * genPath(char * extra){
-  printf("hi\n");
-  char * path = (char*)calloc(256, sizeof(char));
-  int PATH_SIZE = 256*sizeof(char);
-  path = getcwd(path, PATH_SIZE);
-  path = strcat(path, extra);
-  printf("path is %s\n", path);
-  return path;
+  return 0;
 }
