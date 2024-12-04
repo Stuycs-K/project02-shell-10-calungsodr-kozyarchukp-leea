@@ -46,22 +46,31 @@ void redirect(char* line){
         if (input_file != NULL){
             int read_input = open(input_file, O_RDONLY, 0);
             if (read_input==-1) printErr();
-            // args[0] would be the program
-            dup2(args[0], read_input);
+
+            int stdin = STDIN_FILENO; 
+            int backup_stdin = dup(stdin);
+            dup2(stdin, read_input);
+            execvp(args[0], args);
+            fflush(stdin);
+            dup2(backup_stdin, stdin);
+            
         }
 
         // this means that it looks like this: b  > _.txt
-        // redirect stuff from program b output (read_output) into file
+        // redirect stuff from program b output into file
         if (output_file != NULL){
-            int read_output = open(output_file,  O_WRONLY | O_CREAT | O_TRUNC, 0644);
-            if (read_output==-1) printErr();
-            // args[1] would be the file
-            dup2(args[1], read_output);
+            int redirect_to_output = open(output_file,  O_WRONLY | O_CREAT | O_TRUNC, 0644);
+            if (redirect_to_output==-1) printErr();
+
+            int stdout = STDOUT_FILENO; 
+            int backup_stdout = dup(stdout);
+            dup2(redirect_to_output, stdout);
+            execvp(args[0], args);
+            fflush(stdout);
+            dup2(backup_stdout, stdout);
         }
     }
 
-    execvp(args[0], args); // error handling? perror? 
-    // not right, make sure execvp happens after 
 
 /*
 advice from class lessons...
@@ -72,7 +81,6 @@ advice from class lessons...
     printf("TO THE FILE!!!\n");
     fflush(stdout);//not needed when a child process exits, becaue exiting a process will flush automatically.
     dup2(backup_stdout, stdout); //sets the stdout entry to backup_stdout, which is the original stdout
-
 Your shell project will need to use dup() and dup2()
 It should be reasonably straight forward that you can implement the redirection operators < or > by changing the 
 input to be a file instead of stdin, or the output to be a file not stdout.
