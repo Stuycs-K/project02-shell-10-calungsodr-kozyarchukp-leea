@@ -34,7 +34,6 @@ char ** prompt(){
   getcwd(buffer, 256);
   printf("%s$ ", buffer);
   fflush(stdout);
-  //i think fflush is supposed to go here maybe idk.........
   char * line_buff = (char*)calloc(256, sizeof(char));
   fgets(line_buff, 255, stdin);
   parse_args(line_buff, args);
@@ -52,8 +51,8 @@ run c2 and redirect the temp file to stdin!!!
 remove the temp file when done!!!
 
 */
-
 // Redirect stdout from one program to stdin of the next.
+/*sorry commenting out for now bc its giving me errors
 void pipe(char* command1, char* command2){
     char* args1[32];
     char* args2[32];
@@ -73,3 +72,4 @@ void pipe(char* command1, char* command2){
         //redirect("first_output.txt > %s", args2);
     }
 }
+*/
