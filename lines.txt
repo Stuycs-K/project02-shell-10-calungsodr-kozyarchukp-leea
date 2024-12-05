@@ -1,0 +1,10 @@
+echo hello! lets run ls!
+ls
+echo fun. time to make a directory called temp..
+mkdir temp
+echo made directory, does it exist? ls time!
+ls
+echo delete time
+rm -d temp
+echo FINAL LS!!!
+ls

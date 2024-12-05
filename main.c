@@ -12,21 +12,23 @@ int err(){
 int main(int argc, char *argv[]) {
     while (1) {
         char ** args = prompt();
-        pid_t p = fork();
-        if(p < 0) {
-            perror("forkfail");
-            err();
-        } else if (p == 0){
-            //CHILD
-            args[0] = strsep(&args[0], "\n");
-            if (!isCommand(args)){
-              printf("not a command");
+        if (!isCommand(args)){
+          pid_t p = fork();
+          if(p < 0) {
+              perror("forkfail");
+              err();
+          } else if (p == 0){
+              //CHILD
+              for (int i = 0; i < 16; i++) {
+                  args[i] = strsep(&args[i], "\n");
+              }
               execvp(args[0], args);
-            }
-        } else {
-            //PARENT - wait until child is done
-            int status;
-            wait(&status);
+
+          } else {
+              //PARENT - wait until child is done
+              int status;
+              wait(&status);
+          }
         }
     }
 }
@@ -40,7 +42,9 @@ char ** prompt(){
   printf("%s$ ", buffer);
   fflush(stdout);
   char * line_buff = (char*)calloc(256, sizeof(char));
-  fgets(line_buff, 255, stdin);
+  if (fgets(line_buff, 255, stdin) == NULL){
+    exit(1);
+  }
   parse_args(line_buff, args);
   return args;
 }
@@ -50,7 +54,9 @@ int isCommand(char ** args){
     cd(args);
     return 1;
   } else if (strcmp(args[0], "exit") == 0){
-    exit(1);
+    printf("hi\n");
+    return 10;
+    printf("what\n");
   } else {
     return 0;
   }
