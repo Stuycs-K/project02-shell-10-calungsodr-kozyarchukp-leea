@@ -11,11 +11,7 @@
 // can use printErr() since main.h is included
 // check execvp work
 
-void redirect(char* line){
-    char* args[32];
-
-    // parse line into args array
-    parse_args(line,args); 
+void redirect(char** args){
 
     // establish files
     char* input_file = NULL;

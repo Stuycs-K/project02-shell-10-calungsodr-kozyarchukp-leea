@@ -11,6 +11,20 @@ int err(){
 int main(int argc, char *argv[]) {
     while (1) {
         char ** args = prompt();
+        // TO DO: if args[] has a |, call pipe
+        // if args[] has < or >, then call redirect
+        int i = 0;
+        while (args[i+1]!=NULL){
+            /*if(strcmp(args[i],'|')==0){
+                pipe(args);
+            }*/
+            if(strcmp(args[i],'<')==0 || strcmp(args[i],'<')==0){
+                redirect(args);
+            }
+            else {
+                i++;
+            }
+        }
         pid_t p = fork();
         if(p < 0) {
             perror("forkfail");
@@ -44,6 +58,10 @@ char ** prompt(){
 }
 
 // not done at all, need to fix. figure out directing to files?
+
+
+// change. pipe should take in array of separated args
+
 /*
 Implement simple pipes. Only one pipe at a time is required.
 The pipe operator | redirects one program's output to be another program's input. e.g. ls | wc would run ls and use the output from ls as the input for wc.
