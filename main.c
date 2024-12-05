@@ -2,6 +2,7 @@
 #include "misc.h"
 #include "main.h"
 #include "redirect.h"
+#include "commands.h"
 
 int err(){
   printf("Error %d: %s\n", errno, strerror(errno));
@@ -34,7 +35,9 @@ int main(int argc, char *argv[]) {
             for (int i = 0; i < 16; i++) {
                 args[i] = strsep(&args[i], "\n");
             }
-            execvp(args[0], args);
+            if (!isCommand(args)){
+              execvp(args[0], args);
+            }
         } else {
             //PARENT - wait until child is done
             int status;
@@ -52,9 +55,22 @@ char ** prompt(){
   printf("%s$ ", buffer);
   fflush(stdout);
   char * line_buff = (char*)calloc(256, sizeof(char));
-  fgets(line_buff, 255, stdin);
+  if (fgets(line_buff, 255, stdin) == NULL)exit(1);
   parse_args(line_buff, args);
   return args;
+}
+
+int isCommand(char ** args){
+  if(strcmp(args[0], "cd") == 0){
+    cd(args);
+    return 1;
+  } else if (strcmp(args[0], "exit") == 0){
+    printf("hi\n");
+    return 10;
+    printf("what\n");
+  } else {
+    return 0;
+  }
 }
 
 // not done at all, need to fix. figure out directing to files?
