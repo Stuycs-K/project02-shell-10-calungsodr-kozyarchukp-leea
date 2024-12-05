@@ -12,6 +12,7 @@
 int err();
 int main(int argc, char *argv[]);
 char ** prompt();
+int isCommand(char ** args);
 void piper(char* command1, char* command2);
 
 #endif
