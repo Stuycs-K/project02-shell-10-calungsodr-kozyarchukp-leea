@@ -18,7 +18,9 @@ int main(int argc, char *argv[]) {
             err();
         } else if (p == 0){
             //CHILD
-            args[0] = strsep(&args[0], "\n");
+            for (int i = 0; i < 16; i++) {
+                args[i] = strsep(&args[i], "\n");
+            }
             if (!isCommand(args)){
               execvp(args[0], args);
             }
