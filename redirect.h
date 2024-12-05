@@ -1,6 +1,6 @@
-#ifndef PARSE_H
-#define PARSE_H
+#ifndef REDIRECT_H
+#define REDIRECT_H
 
-void redirect(char* line);
+void redirect(char** args);
 
 #endif

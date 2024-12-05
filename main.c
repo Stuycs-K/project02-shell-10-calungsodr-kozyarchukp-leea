@@ -15,11 +15,13 @@ int main(int argc, char *argv[]) {
         // TO DO: if args[] has a |, call pipe
         // if args[] has < or >, then call redirect
         int i = 0;
-        while (args[i+1]!=NULL){
+        while (args[i]!=NULL){
             /*if(strcmp(args[i],'|')==0){
                 pipe(args);
             }*/
-            if(strcmp(args[i],'<')==0 || strcmp(args[i],'<')==0){
+            char* re1 = "<";
+            char* re2 = ">";
+            if(strcmp(args[i],re1)==0 || strcmp(args[i],re2)==0){
                 redirect(args);
             }
             else {

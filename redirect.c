@@ -1,11 +1,6 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <fcntl.h>
-#include <string.h>
-#include <sys/types.h>
-#include <dirent.h>
 #include "parse.h"
 #include "main.h"
+#include "redirect.h"
 
 /******** TO DO: error handling !!!!!!!!!! *********/
 // can use printErr() since main.h is included
@@ -41,13 +36,12 @@ void redirect(char** args){
         // redirect stuff from the file taken from (in read_input) to run into program a
         if (input_file != NULL){
             int read_input = open(input_file, O_RDONLY, 0);
-            if (read_input==-1) printErr();
+            if (read_input==-1) err();
 
             int stdin = STDIN_FILENO; 
             int backup_stdin = dup(stdin);
             dup2(stdin, read_input);
             execvp(args[0], args);
-            fflush(stdin);
             dup2(backup_stdin, stdin);
             
         }
@@ -56,14 +50,15 @@ void redirect(char** args){
         // redirect stuff from program b output into file
         if (output_file != NULL){
             int redirect_to_output = open(output_file,  O_WRONLY | O_CREAT | O_TRUNC, 0644);
-            if (redirect_to_output==-1) printErr();
+            if (redirect_to_output==-1) err();
 
             int stdout = STDOUT_FILENO; 
             int backup_stdout = dup(stdout);
             dup2(redirect_to_output, stdout);
             execvp(args[0], args);
-            fflush(stdout);
             dup2(backup_stdout, stdout);
+
+            // do i need to flush for these
         }
     }
 
