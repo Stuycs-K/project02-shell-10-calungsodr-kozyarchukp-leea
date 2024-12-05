@@ -10,21 +10,27 @@ int err(){
 
 int main(int argc, char *argv[]) {
     while (1) {
-        char ** args = prompt();
-        pid_t p = fork();
-        if(p < 0) {
-            perror("forkfail");
-            err();
-        } else if (p == 0){
-            //CHILD
-            for (int i = 0; i < 16; i++) {
-                args[i] = strsep(&args[i], "\n");
+        char ** commands = prompt();
+        int i = 0;
+        while (commands[i]) {
+            char ** args = (char**)calloc(16, sizeof(char*));
+            parse_args(commands[i], args);
+            pid_t p = fork();
+            if (p < 0) {
+                perror("forkfail");
+                err();
+            } else if (p == 0){
+                //CHILD
+                for (int i = 0; i < 16; i++) {
+                    args[i] = strsep(&args[i], "\n");
+                }
+                execvp(args[0], args);
+            } else {
+                //PARENT - wait until child is done
+                int status;
+                wait(&status);
             }
-            execvp(args[0], args);
-        } else {
-            //PARENT - wait until child is done
-            int status;
-            wait(&status);
+            i++;
         }
     }
 }
@@ -32,15 +38,24 @@ int main(int argc, char *argv[]) {
 
 //prints cwd path and parses user input. returns array of args from stdin
 char ** prompt(){
-  char ** args = (char**)calloc(16, sizeof(char*));
   char buffer[256];
   getcwd(buffer, 256);
   printf("%s$ ", buffer);
   fflush(stdout);
   char * line_buff = (char*)calloc(256, sizeof(char));
-  fgets(line_buff, 255, stdin);
-  parse_args(line_buff, args);
-  return args;
+  char * val = fgets(line_buff, 255, stdin);
+  if (val == NULL) {
+    printf("\n");
+    exit(0);
+  }
+  char *curr = line_buff;
+  int i = 0;
+  char ** commands = (char**)calloc(16, sizeof(char*));
+  while (curr) {
+    commands[i] = strsep(&curr, ";");
+    i++;
+  }
+  return commands;
 }
 
 // not done at all, need to fix. figure out directing to files?
