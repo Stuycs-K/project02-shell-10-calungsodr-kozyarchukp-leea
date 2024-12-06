@@ -11,47 +11,26 @@ int err(){
 
 int main(int argc, char *argv[]) {
     while (1) {
-        // ************* my current change *************** //
-<<<<<<< HEAD
-        char ** args = prompt();
-        // TO DO: if args[] has a |, call pipe
-        // if args[] has < or >, then call redirect
-        int i = 0;
-        while (args[i]!=NULL){
-            /*if(strcmp(args[i],'|')==0){
-                pipe(args);
-            }*/
-            char* re1 = "<";
-            char* re2 = ">";
-            if(strcmp(args[i],re1)==0 || strcmp(args[i],re2)==0){
-                redirect(args);
-            }
-            else {
-                i++;
-            }
-        }
-        pid_t p = fork();
-        if(p < 0) {
-            perror("forkfail");
-            err();
-        } else if (p == 0){
-            //CHILD
-        // ************* my current change end *************** //
-=======
-        // ************* incoming change *************** //
         int i = 0;
         char ** commands = prompt();
         while (commands[i]) {
             char ** args = (char**)calloc(16, sizeof(char*));
             parse_args(commands[i], args);
-        // ************* incoming change end *************** //
->>>>>>> main
             for (int i = 0; i < 16; i++) {
                 args[i] = strsep(&args[i], "\n");
             }
             if (strcmp(args[0], "cd") == 0) {cd(args);}
             else if (strcmp(args[0], "exit") == 0) {exit(0);}
             else {
+                int j = 0;
+                while (args[j]!=NULL){
+                    char* re1 = "<";
+                    char* re2 = ">";
+                    if(strcmp(args[j],re1)==0 || strcmp(args[j],re2)==0){
+                        redirect(args);
+                    }
+                    else j++;
+                }
                 pid_t p = fork();
                 if (p < 0) {
                     perror("forkfail");
