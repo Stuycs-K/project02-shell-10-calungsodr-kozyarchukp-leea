@@ -37,10 +37,13 @@ int main(int argc, char *argv[]) {
 //prints cwd path and parses user input. returns array of args from stdin
 char ** prompt(){
   char ** args = (char**)calloc(16, sizeof(char*));
-  char buffer[256];
-  getcwd(buffer, 256);
-  printf("%s$ ", buffer);
-  fflush(stdout);
+      // Only print the working directory if stdin is a terminal
+  if (isatty(STDIN_FILENO)) {
+    char buffer[256];
+    getcwd(buffer, 256);
+    printf("%s$ ", buffer);
+    fflush(stdout);
+  }
   char * line_buff = (char*)calloc(256, sizeof(char));
   if (fgets(line_buff, 255, stdin) == NULL){
     exit(1);
