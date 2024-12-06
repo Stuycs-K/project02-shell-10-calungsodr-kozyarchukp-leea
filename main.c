@@ -11,6 +11,7 @@ int err(){
 
 int main(int argc, char *argv[]) {
     while (1) {
+        // ************* my current change *************** //
 <<<<<<< HEAD
         char ** args = prompt();
         // TO DO: if args[] has a |, call pipe
@@ -35,12 +36,15 @@ int main(int argc, char *argv[]) {
             err();
         } else if (p == 0){
             //CHILD
+        // ************* my current change end *************** //
 =======
+        // ************* incoming change *************** //
         int i = 0;
         char ** commands = prompt();
         while (commands[i]) {
             char ** args = (char**)calloc(16, sizeof(char*));
             parse_args(commands[i], args);
+        // ************* incoming change end *************** //
 >>>>>>> main
             for (int i = 0; i < 16; i++) {
                 args[i] = strsep(&args[i], "\n");
