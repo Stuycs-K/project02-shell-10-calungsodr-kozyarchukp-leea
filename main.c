@@ -11,6 +11,7 @@ int err(){
 
 int main(int argc, char *argv[]) {
     while (1) {
+<<<<<<< HEAD
         char ** args = prompt();
         // TO DO: if args[] has a |, call pipe
         // if args[] has < or >, then call redirect
@@ -28,10 +29,19 @@ int main(int argc, char *argv[]) {
                 i++;
             }
         }
+        pid_t p = fork();
+        if(p < 0) {
+            perror("forkfail");
+            err();
+        } else if (p == 0){
+            //CHILD
+=======
+        int i = 0;
         char ** commands = prompt();
         while (commands[i]) {
             char ** args = (char**)calloc(16, sizeof(char*));
             parse_args(commands[i], args);
+>>>>>>> main
             for (int i = 0; i < 16; i++) {
                 args[i] = strsep(&args[i], "\n");
             }
