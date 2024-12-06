@@ -6,7 +6,7 @@
 
 int err(){
   printf("Error %d: %s\n", errno, strerror(errno));
-  exit(1);
+  //exit(1);
 }
 
 int main(int argc, char *argv[]) {
@@ -28,51 +28,55 @@ int main(int argc, char *argv[]) {
                 i++;
             }
         }
-        pid_t p = fork();
-        if(p < 0) {
-            perror("forkfail");
-            err();
-        } else if (p == 0){
-            //CHILD
+        char ** commands = prompt();
+        while (commands[i]) {
+            char ** args = (char**)calloc(16, sizeof(char*));
+            parse_args(commands[i], args);
             for (int i = 0; i < 16; i++) {
                 args[i] = strsep(&args[i], "\n");
             }
-            if (!isCommand(args)){
-              execvp(args[0], args);
+            if (strcmp(args[0], "cd") == 0) {cd(args);}
+            else if (strcmp(args[0], "exit") == 0) {exit(0);}
+            else {
+                pid_t p = fork();
+                if (p < 0) {
+                    perror("forkfail");
+                    err();
+                } else if (p == 0){
+                    //CHILD
+                    execvp(args[0], args);
+                } else {
+                    //PARENT - wait until child is done
+                    int status;
+                    wait(&status);
+                }
             }
-        } else {
-            //PARENT - wait until child is done
-            int status;
-            wait(&status);
+            i++;
         }
     }
 }
 
 
-//prints cwd path and parses user input. returns array of args from stdin
+//prints cwd path and parses user input. returns array of commands from stdin
 char ** prompt(){
-  char ** args = (char**)calloc(16, sizeof(char*));
   char buffer[256];
   getcwd(buffer, 256);
   printf("%s$ ", buffer);
   fflush(stdout);
   char * line_buff = (char*)calloc(256, sizeof(char));
-  if (fgets(line_buff, 255, stdin) == NULL)exit(1);
-  parse_args(line_buff, args);
-  return args;
-}
-
-int isCommand(char ** args){
-  if(strcmp(args[0], "cd") == 0){
-    cd(args);
-    return 1;
-  } else if (strcmp(args[0], "exit") == 0){
-    printf("hi\n");
-    return 10;
-    printf("what\n");
-  } else {
-    return 0;
+  char * val = fgets(line_buff, 255, stdin);
+  if (val == NULL) {
+    printf("\n");
+    exit(0);
   }
+  char *curr = line_buff;
+  int i = 0;
+  char ** commands = (char**)calloc(16, sizeof(char*));
+  while (curr) {
+    commands[i] = strsep(&curr, ";");
+    i++;
+  }
+  return commands;
 }
 
 // not done at all, need to fix. figure out directing to files?
