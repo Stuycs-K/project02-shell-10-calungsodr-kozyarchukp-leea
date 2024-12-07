@@ -24,12 +24,10 @@ int main(int argc, char *argv[]) {
             else {
                 int j = 0;
                 while (args[j]!=NULL){
-                    char* re1 = "<";
-                    char* re2 = ">";
                     if(strcmp(args[j],"|")==0){
                         piping(args);
                     }
-                    if(strcmp(args[j],re1)==0 || strcmp(args[j],re2)==0){
+                    if(strcmp(args[j],"<")==0 || strcmp(args[j],">")==0){
                         redirect(args);
                     }
                     else j++;
@@ -38,11 +36,9 @@ int main(int argc, char *argv[]) {
                 if (p < 0) {
                     perror("forkfail");
                     err();
-                } else if (p == 0){
-                    //CHILD
+                } else if (p == 0){ //CHILD
                     execvp(args[0], args);
-                } else {
-                    //PARENT - wait until child is done
+                } else { //PARENT - wait until child is done
                     int status;
                     wait(&status);
                 }
@@ -74,44 +70,6 @@ char ** prompt(){
   }
   return commands;
 }
-
-// not done at all, need to fix. figure out directing to files?
-
-
-// change. pipe should take in array of separated args
-
-/*
-Implement simple pipes. Only one pipe at a time is required.
-The pipe operator | redirects one program's output to be another program's input. e.g. ls | wc would run ls and use the output from ls as the input for wc.
-Check out popen() for the advanced way of doing this, otherwise use a temp file.
-
-run c1 and redirect stdout to a temp file!!!!
-run c2 and redirect the temp file to stdin!!!
-remove the temp file when done!!!
-
-*/
-// Redirect stdout from one program to stdin of the next.
-/*sorry commenting out for now bc its giving me errors
-void pipe(char* command1, char* command2){
-    char* args1[32];
-    char* args2[32];
-    // copies command into args arrays, separates arguments
-    parse_args(command1, args1);
-    parse_args(command1, args2);
-
-    // create temporary file for first command's output
-    int temp = open("first_output.txt", O_WRONLY | O_CREAT | O_TRUNC, 0644);
-    if(temp==-1) err();
-
-    pid_t p1 = fork();
-    if (p1 == 0){ // child
-        // write output to file, then direct this output into the second arugment... ok so try and use the redirect command from redirect.c...
-        // does this make sense?
-        // should redirect the output into arg2 (after the pipe), then execute thaat
-        //redirect("first_output.txt > %s", args2);
-    }
-}
-*/
 
 
 void piping(char** args){
