@@ -26,6 +26,9 @@ int main(int argc, char *argv[]) {
                 while (args[j]!=NULL){
                     char* re1 = "<";
                     char* re2 = ">";
+                    if(strcmp(args[j],"|")==0){
+                        piping(args);
+                    }
                     if(strcmp(args[j],re1)==0 || strcmp(args[j],re2)==0){
                         redirect(args);
                     }
@@ -109,3 +112,77 @@ void pipe(char* command1, char* command2){
     }
 }
 */
+
+
+void piping(char** args){
+    char* args1[150];
+    char* args2[150];
+
+    // separate into args1
+    int i = 0;
+    while(args[i]!=NULL && strcmp(args[i],"|")!=0){
+        args1[i] = args[i];
+        i++;
+    }
+    args1[i] = NULL;
+    i++; // ignore pipe
+
+    // separate into args2
+    int j = 0;
+    while(args[j]!=NULL){
+        args2[j] = args[i];
+        i++;
+        j++;
+    }
+    args2[j] = NULL;
+
+    pid_t p1 = fork();
+    if (p1 == 0){ // child
+
+        int c = 0;
+        while (args1[c]!=NULL){
+            if(strcmp(args1[c],"<")==0){
+                redirect(args1);
+            }
+            c++;
+        }
+
+        // redirect stdout into temp.txt
+        int to_output = open("temp.txt", O_WRONLY | O_CREAT | O_TRUNC, 0644);
+        if (to_output == -1) err();
+        dup2(to_output, STDOUT_FILENO);
+
+        // exec command
+        execvp(args1[0],args1); // executes first command
+        perror("first command failed to execute");
+    }
+    if (p1>0){
+        waitpid(p1,NULL,0); // waits for child to finish
+    }
+
+    pid_t p2 = fork();
+    if (p2 == 0){ // child
+
+        int d = 0;
+        while (args1[d]!=NULL){
+            if(strcmp(args2[d],">")==0){
+                redirect(args2);
+            }
+            else d++;
+        }
+
+        // open temp to read output of first command
+        int temp = open("temp.txt", O_RDONLY);
+        if (temp == -1) err();
+        // output into stdin, then execute
+        dup2(temp, STDIN_FILENO);
+        execvp(args2[0],args2);
+        perror("second command failed to execute");
+    }
+    if (p2>0){
+        waitpid(p2,NULL,0); // waits for child to finish
+    }
+
+    remove("temp.txt"); // looked this up
+}
+
