@@ -6,25 +6,37 @@
 // can use printErr() since main.h is included
 // check execvp work
 
+void removeArg(char** args, int ind){
+    for (int i = ind; args[i]!=NULL; i++){
+        args[i]=args[i+1];
+    }
+}
+
 void redirect(char** args){
 
     // establish files
     char* input_file = NULL;
     char* output_file = NULL;
+    int backup_stdin = -1;
+    int backup_stdout = -1;
 
     for (int i = 0; args[i]!=NULL;i++){
         // finding <
         if (strcmp(args[i],"<")==0){
             if(args[i+1]!=NULL){
                 input_file = args[i+1]; // the file to take from is found after <
-                args[i]=NULL; // remove redirection operator from the array
+                removeArg(args,i); // remove <
+                removeArg(args,i); // remove file name
+                i--; // go back after removing!
             }
         }
         if (strcmp(args[i],">")==0){
             // finding >
             if(args[i+1]!=NULL){
                 output_file = args[i+1]; // the file to redirect to is found after >
-                args[i]=NULL; // remove redirection operator from the array
+                removeArg(args,i); // remove <
+                removeArg(args,i); // remove file name
+                i--; // go back after removing!
             }
         }
     }
@@ -32,17 +44,18 @@ void redirect(char** args){
     pid_t p = fork();
 
     if (p == 0){ // child process in fork
+
+        fflush(stdout);
+
+        // DOES NOT WORK YET
         // this means that it looks like this: a < _.txt
         // redirect stuff from the file taken from (in read_input) to run into program a
         if (input_file != NULL){
             int read_input = open(input_file, O_RDONLY, 0);
             if (read_input==-1) err();
-
-            int stdin = STDIN_FILENO; 
-            int backup_stdin = dup(stdin);
-            dup2(stdin, read_input);
-            execvp(args[0], args);
-            dup2(backup_stdin, stdin);
+            backup_stdin = dup(STDIN_FILENO);
+            dup2(read_input, STDIN_FILENO); 
+            close(read_input);
             
         }
 
@@ -52,28 +65,20 @@ void redirect(char** args){
             int redirect_to_output = open(output_file,  O_WRONLY | O_CREAT | O_TRUNC, 0644);
             if (redirect_to_output==-1) err();
 
-            int stdout = STDOUT_FILENO; 
-            int backup_stdout = dup(stdout);
-            dup2(redirect_to_output, stdout);
-            execvp(args[0], args);
-            dup2(backup_stdout, stdout);
-
-            // do i need to flush for these
+            backup_stdout = dup(STDOUT_FILENO);
+            fflush(stdout);
+            dup2(redirect_to_output, STDOUT_FILENO);
+            close(redirect_to_output);
         }
+
+        execvp(args[0], args);
+        perror("execvp failed!");
     }
-
-
-/*
-advice from class lessons...
-    int fd1 = open("foo.txt", O_WRONLY);
-    int stdout = STDOUT_FILENO;//stdout filenumber is 1, but this makes it clear
-    int backup_stdout = dup( stdout ) // save for later
-    dup2(fd1, stdout); //sets stdout's entry to the file "foo.txt".
-    printf("TO THE FILE!!!\n");
-    fflush(stdout);//not needed when a child process exits, becaue exiting a process will flush automatically.
-    dup2(backup_stdout, stdout); //sets the stdout entry to backup_stdout, which is the original stdout
-Your shell project will need to use dup() and dup2()
-It should be reasonably straight forward that you can implement the redirection operators < or > by changing the 
-input to be a file instead of stdin, or the output to be a file not stdout.
-*/
+    if (p>0){ // parent process should wait until child finishes! i think!
+        int status;
+        waitpid(p, &status, 0);
+        
+        if (backup_stdin!=-1) dup2(backup_stdin,STDIN_FILENO);
+        if (backup_stdout!=-1) dup2(backup_stdout,STDOUT_FILENO);
+    }
 }
