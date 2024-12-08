@@ -52,10 +52,12 @@ int main(int argc, char *argv[]) {
 
 //prints cwd path and parses user input. returns array of commands from stdin
 char ** prompt(){
-  char buffer[256];
-  getcwd(buffer, 256);
-  printf("%s$ ", buffer);
-  fflush(stdout);
+  if(isatty(STDIN_FILENO)){
+    char buffer[256];
+    getcwd(buffer, 256);
+    printf("%s$ ", buffer);
+    fflush(stdout);
+  }
   char * line_buff = (char*)calloc(256, sizeof(char));
   char * val = fgets(line_buff, 255, stdin);
   if (val == NULL) {
