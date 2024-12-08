@@ -17,8 +17,9 @@ void redirect(char** args){
     // establish files
     char* input_file = NULL;
     char* output_file = NULL;
-    int backup_stdin = -1;
-    int backup_stdout = -1;
+    int backup_stdin = dup(STDIN_FILENO);
+    int backup_stdout = dup(STDOUT_FILENO);
+
 
     for (int i = 0; args[i]!=NULL;i++){
         // finding <
@@ -45,7 +46,7 @@ void redirect(char** args){
 
     if (p == 0){ // child process in fork
 
-        fflush(stdout);
+      //  fflush(stdout);
 
         // DOES NOT WORK YET
         // this means that it looks like this: a < _.txt
@@ -53,10 +54,10 @@ void redirect(char** args){
         if (input_file != NULL){
             int read_input = open(input_file, O_RDONLY, 0);
             if (read_input==-1) err();
-            backup_stdin = dup(STDIN_FILENO);
-            dup2(read_input, STDIN_FILENO); 
+          //  backup_stdin = dup(STDIN_FILENO);
+            dup2(read_input, STDIN_FILENO);
             close(read_input);
-            
+
         }
 
         // this means that it looks like this: b  > _.txt
@@ -65,8 +66,8 @@ void redirect(char** args){
             int redirect_to_output = open(output_file,  O_WRONLY | O_CREAT | O_TRUNC, 0644);
             if (redirect_to_output==-1) err();
 
-            backup_stdout = dup(STDOUT_FILENO);
-            fflush(stdout);
+          //  backup_stdout = dup(STDOUT_FILENO);
+          //  fflush(stdout);
             dup2(redirect_to_output, STDOUT_FILENO);
             close(redirect_to_output);
         }
@@ -77,8 +78,9 @@ void redirect(char** args){
     if (p>0){ // parent process should wait until child finishes! i think!
         int status;
         waitpid(p, &status, 0);
-        
-        if (backup_stdin!=-1) dup2(backup_stdin,STDIN_FILENO);
-        if (backup_stdout!=-1) dup2(backup_stdout,STDOUT_FILENO);
+
+        close(backup_stdin);
+        close(backup_stdout);
+
     }
 }
