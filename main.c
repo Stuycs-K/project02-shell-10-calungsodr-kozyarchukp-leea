@@ -101,34 +101,36 @@ void piping(char** args){
     }
     args2[j] = NULL;
 
-    //heres my temp file where all stduot will go
-    int temp_f = open("temp.txt", O_WRONLY | O_CREAT | O_TRUNC, 0644);
-    if(temp_f==-1)err();
+
 
     pid_t p1 = fork();
     if (p1 == 0){ // child
+        //heres my temp file where all stduot will go
+        int temp_f = open("temp.txt", O_WRONLY | O_CREAT | O_TRUNC, 0644);
+        if(temp_f==-1)err();
 
         //redirect stdout into temp_
         dup2(temp_f, STDOUT_FILENO);
         close(temp_f);
+
         execvp(args1[0], args1);
         perror("wuhoh");
         exit(1);
 
     }
     if (p1>0){
-        close(temp_f); //since i opened it outisde.. idk why i opened it outside low key
         waitpid(p1,NULL,0); // waits for child to finish
     }
 
     pid_t p2 = fork();
     if (p2 == 0){ // child2
         //opening temp again so i can read it
-        temp_f = open("temp.txt", O_RDONLY,0);
+        int temp_f = open("temp.txt", O_RDONLY,0);
         if(temp_f==-1)err();
 
         dup2(temp_f, STDIN_FILENO);
         close(temp_f);
+
         execvp(args2[0], args2);
         perror("lalala");
         exit(1);
