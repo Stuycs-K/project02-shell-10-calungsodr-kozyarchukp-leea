@@ -1,39 +1,42 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <fcntl.h>
-#include <string.h>
-#include <sys/types.h>
-#include <dirent.h>
 #include "parse.h"
 #include "main.h"
+#include "redirect.h"
 
 /******** TO DO: error handling !!!!!!!!!! *********/
 // can use printErr() since main.h is included
 // check execvp work
 
-void redirect(char* line){
-    char* args[32];
+void removeArg(char** args, int ind){
+    for (int i = ind; args[i]!=NULL; i++){
+        args[i]=args[i+1];
+    }
+}
 
-    // parse line into args array
-    parse_args(line,args); 
+void redirect(char** args){
 
     // establish files
     char* input_file = NULL;
     char* output_file = NULL;
+    int backup_stdin = -1;
+    int backup_stdout = -1;
 
     for (int i = 0; args[i]!=NULL;i++){
         // finding <
         if (strcmp(args[i],"<")==0){
             if(args[i+1]!=NULL){
                 input_file = args[i+1]; // the file to take from is found after <
-                args[i]=NULL; // remove redirection operator from the array
+                removeArg(args,i); // remove <
+                removeArg(args,i); // remove file name
+                i--; // go back after removing!
             }
         }
         if (strcmp(args[i],">")==0){
             // finding >
             if(args[i+1]!=NULL){
                 output_file = args[i+1]; // the file to redirect to is found after >
-                args[i]=NULL; // remove redirection operator from the array
+                removeArg(args,i); // remove <
+                removeArg(args,i); // remove file name
+                i--; // go back after removing!
             }
         }
     }
@@ -41,40 +44,41 @@ void redirect(char* line){
     pid_t p = fork();
 
     if (p == 0){ // child process in fork
+
+        fflush(stdout);
+
+        // DOES NOT WORK YET
         // this means that it looks like this: a < _.txt
         // redirect stuff from the file taken from (in read_input) to run into program a
         if (input_file != NULL){
             int read_input = open(input_file, O_RDONLY, 0);
-            if (read_input==-1) printErr();
-            // args[0] would be the program
-            dup2(args[0], read_input);
+            if (read_input==-1) err();
+            backup_stdin = dup(STDIN_FILENO);
+            dup2(read_input, STDIN_FILENO); 
+            close(read_input);
+            
         }
 
         // this means that it looks like this: b  > _.txt
-        // redirect stuff from program b output (read_output) into file
+        // redirect stuff from program b output into file
         if (output_file != NULL){
-            int read_output = open(output_file,  O_WRONLY | O_CREAT | O_TRUNC, 0644);
-            if (read_output==-1) printErr();
-            // args[1] would be the file
-            dup2(args[1], read_output);
+            int redirect_to_output = open(output_file,  O_WRONLY | O_CREAT | O_TRUNC, 0644);
+            if (redirect_to_output==-1) err();
+
+            backup_stdout = dup(STDOUT_FILENO);
+            fflush(stdout);
+            dup2(redirect_to_output, STDOUT_FILENO);
+            close(redirect_to_output);
         }
+
+        execvp(args[0], args);
+        perror("execvp failed!");
     }
-
-    execvp(args[0], args); // error handling? perror? 
-    // not right, make sure execvp happens after 
-
-/*
-advice from class lessons...
-    int fd1 = open("foo.txt", O_WRONLY);
-    int stdout = STDOUT_FILENO;//stdout filenumber is 1, but this makes it clear
-    int backup_stdout = dup( stdout ) // save for later
-    dup2(fd1, stdout); //sets stdout's entry to the file "foo.txt".
-    printf("TO THE FILE!!!\n");
-    fflush(stdout);//not needed when a child process exits, becaue exiting a process will flush automatically.
-    dup2(backup_stdout, stdout); //sets the stdout entry to backup_stdout, which is the original stdout
-
-Your shell project will need to use dup() and dup2()
-It should be reasonably straight forward that you can implement the redirection operators < or > by changing the 
-input to be a file instead of stdin, or the output to be a file not stdout.
-*/
+    if (p>0){ // parent process should wait until child finishes! i think!
+        int status;
+        waitpid(p, &status, 0);
+        
+        if (backup_stdin!=-1) dup2(backup_stdin,STDIN_FILENO);
+        if (backup_stdout!=-1) dup2(backup_stdout,STDOUT_FILENO);
+    }
 }
