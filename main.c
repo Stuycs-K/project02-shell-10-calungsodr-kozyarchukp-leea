@@ -1,5 +1,4 @@
 #include "parse.h"
-#include "misc.h"
 #include "main.h"
 #include "redirect.h"
 
@@ -82,6 +81,16 @@ int cd(char ** args){
     if (chdir(path)==-1)err();
   }
   return 0;
+}
+
+// prints char **
+void printchars(char ** arr){
+  printf("[");
+  while(*arr!=NULL){
+    printf("%s ", *arr);
+    arr++;
+  }
+  printf("]\n");
 }
 
 // not done at all, need to fix. figure out directing to files?

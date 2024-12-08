@@ -15,5 +15,7 @@ char ** prompt();
 int isCommand(char ** args);
 void piper(char* command1, char* command2);
 int cd(char ** args);
+void printchars(char ** arr);
+
 
 #endif
