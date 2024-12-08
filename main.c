@@ -2,7 +2,6 @@
 #include "misc.h"
 #include "main.h"
 #include "redirect.h"
-#include "commands.h"
 
 int err(){
   printf("Error %d: %s\n", errno, strerror(errno));
@@ -72,6 +71,17 @@ char ** prompt(){
     i++;
   }
   return commands;
+}
+
+int cd(char ** args){
+  if ((strcmp(args[0], "cd")) || (args[1] == NULL) || (args[2]!=NULL)){
+    printf("this shouldn't happen. usage: cd <directory>.\n");
+    return -1;
+  } else{
+    char * path = strsep(&args[1], "\n");
+    if (chdir(path)==-1)err();
+  }
+  return 0;
 }
 
 // not done at all, need to fix. figure out directing to files?
