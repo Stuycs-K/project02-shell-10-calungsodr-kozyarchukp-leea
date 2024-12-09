@@ -2,11 +2,13 @@
 #include "main.h"
 #include "redirect.h"
 
+//prints errno
 int err(){
   printf("Error %d: %s\n", errno, strerror(errno));
   //exit(1);
 }
 
+//prints terminal, parses, calls pipes and redirect when necessary
 int main(int argc, char *argv[]) {
     while (1) {
         int i = 0;
@@ -78,7 +80,7 @@ char ** prompt(){
   return commands;
 }
 
-
+//executes a pipe given char** args which is stdin
 void piping(char** args){
     char* args1[150];
     char* args2[150];
@@ -143,6 +145,7 @@ void piping(char** args){
     remove("temp.txt"); // looked this up
 }
 
+//executes cd given char ** args which is stdin
 int cd(char ** args){
   if ((strcmp(args[0], "cd")) || (args[1] == NULL) || (args[2]!=NULL)){
     printf("this shouldn't happen. usage: cd <directory>.\n");
