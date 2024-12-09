@@ -2,13 +2,14 @@
 #include "main.h"
 #include "redirect.h"
 
-//prints errno
+// prints errno
 int err(){
   printf("Error %d: %s\n", errno, strerror(errno));
   //exit(1);
 }
 
-//prints terminal, parses, calls pipes and redirect when necessary
+// prints terminal, parses, calls pipes and redirects when necessary
+// user input, loops until exited
 int main(int argc, char *argv[]) {
     while (1) {
         int i = 0;
@@ -80,8 +81,23 @@ char ** prompt(){
   return commands;
 }
 
-//executes a pipe given char** args which is stdin
+
+
+// test: cat < lines.txt | wc > wc.txt
+
+// uses redirecting to a temp file to execute a command with a pipe given char** args (stdin separated into an array)
 void piping(char** args){
+
+    // for test
+    int l = 0;
+    printf("Original args: ");
+    while (args[l] != NULL) {
+        printf("'%s' ", args[l]);
+        l++;
+    }
+    printf("\n");
+    // for test, end
+
     char* args1[150];
     char* args2[150];
 
@@ -103,6 +119,19 @@ void piping(char** args){
     }
     args2[j] = NULL;
 
+    // for test
+    printf("args1: ");
+    for (int k = 0; args1[k] != NULL; k++) {
+        printf("%s ", args1[k]);
+    }
+    printf("\n");
+
+    printf("args2: ");
+    for (int k = 0; args2[k] != NULL; k++) {
+        printf("%s ", args2[k]);
+    }
+    printf("\n");
+    // for test, end
 
 
     pid_t p1 = fork();
@@ -145,7 +174,7 @@ void piping(char** args){
     remove("temp.txt"); // looked this up
 }
 
-//executes cd given char ** args which is stdin
+// executes cd given char ** args (stdin separated into an array), returns 0
 int cd(char ** args){
   if ((strcmp(args[0], "cd")) || (args[1] == NULL) || (args[2]!=NULL)){
     printf("this shouldn't happen. usage: cd <directory>.\n");

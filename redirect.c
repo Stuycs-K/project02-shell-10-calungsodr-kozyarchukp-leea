@@ -2,18 +2,14 @@
 #include "main.h"
 #include "redirect.h"
 
-/******** TO DO: error handling !!!!!!!!!! *********/
-// can use printErr() since main.h is included
-// check execvp work
-
-//takes int ind and char** args, removes index ind from args
+//takes int ind and char** args, shifts values to remove index ind from args
 void removeArg(char** args, int ind){
     for (int i = ind; args[i]!=NULL; i++){
         args[i]=args[i+1];
     }
 }
 
-//executes redirect, given stdin
+// given stdin in the format of an array of strings, executes redirect
 void redirect(char** args){
 
     // establish files
