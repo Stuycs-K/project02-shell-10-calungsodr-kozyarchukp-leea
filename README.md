@@ -4,15 +4,16 @@ Group 14CharsOrMore
 Members: Raechel Calungsodr, Polina Kozyarchuk, Anastasia Lee
 
 Implemented features:  
-- prints cwd (unless input is from a file)  
+- prompt (prints cwd)
 - takes in user input  
 - can execute programs (ls, echo, cowsay, etc.)  
 - can handle cd  
 - can handle exit  
 - can handle EOF  
-- can handle redirection with:  
+- simple redirection:  
    - one < / >
    - a composition of only < > 
+- simple pipes:
    - one |  
    - composition of | and < / >
   
