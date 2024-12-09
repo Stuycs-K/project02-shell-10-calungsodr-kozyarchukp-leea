@@ -114,7 +114,7 @@ void piping(char** args){
         close(temp_f);
 
         execvp(args1[0], args1);
-        perror("wuhoh");
+        perror("could not execute command");
         exit(1);
 
     }
@@ -132,7 +132,7 @@ void piping(char** args){
         close(temp_f);
 
         execvp(args2[0], args2);
-        perror("lalala");
+        perror("could not execute command");
         exit(1);
 
     }
