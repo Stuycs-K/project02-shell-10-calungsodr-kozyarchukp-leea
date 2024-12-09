@@ -1,8 +1,6 @@
 #include "parse.h"
-#include "misc.h"
 #include "main.h"
 #include "redirect.h"
-#include "commands.h"
 
 int err(){
   printf("Error %d: %s\n", errno, strerror(errno));
@@ -19,28 +17,37 @@ int main(int argc, char *argv[]) {
             for (int i = 0; i < 16; i++) {
                 args[i] = strsep(&args[i], "\n");
             }
+
             if (strcmp(args[0], "cd") == 0) {cd(args);}
             else if (strcmp(args[0], "exit") == 0) {exit(0);}
             else {
                 int j = 0;
+                int is_piped = 0; //check if pipe haandeld
+                int is_redirected = 0; //check if rediericoted
+
                 while (args[j]!=NULL){
                     if(strcmp(args[j],"|")==0){
                         piping(args);
+                        is_piped = 1;
+                        break;
                     }
                     if(strcmp(args[j],"<")==0 || strcmp(args[j],">")==0){
                         redirect(args);
+                        is_redirected = 1;
                     }
                     else j++;
                 }
-                pid_t p = fork();
-                if (p < 0) {
-                    perror("forkfail");
-                    err();
-                } else if (p == 0){ //CHILD
-                    execvp(args[0], args);
-                } else { //PARENT - wait until child is done
-                    int status;
-                    wait(&status);
+                if (!is_piped && !is_redirected){
+                  pid_t p = fork();
+                  if (p < 0) {
+                      perror("forkfail");
+                      err();
+                  } else if (p == 0){ //CHILD
+                      execvp(args[0], args);
+                  } else { //PARENT - wait until child is done
+                      int status;
+                      wait(&status);
+                  }
                 }
             }
             i++;
@@ -87,55 +94,47 @@ void piping(char** args){
 
     // separate into args2
     int j = 0;
-    while(args[j]!=NULL){
+    while(args[i]!=NULL){
         args2[j] = args[i];
         i++;
         j++;
     }
     args2[j] = NULL;
 
+
+
     pid_t p1 = fork();
     if (p1 == 0){ // child
+        //heres my temp file where all stduot will go
+        int temp_f = open("temp.txt", O_WRONLY | O_CREAT | O_TRUNC, 0644);
+        if(temp_f==-1)err();
 
-        int c = 0;
-        while (args1[c]!=NULL){
-            if(strcmp(args1[c],"<")==0){
-                redirect(args1);
-            }
-            c++;
-        }
+        //redirect stdout into temp_
+        dup2(temp_f, STDOUT_FILENO);
+        close(temp_f);
 
-        // redirect stdout into temp.txt
-        int to_output = open("temp.txt", O_WRONLY | O_CREAT | O_TRUNC, 0644);
-        if (to_output == -1) err();
-        dup2(to_output, STDOUT_FILENO);
+        execvp(args1[0], args1);
+        perror("wuhoh");
+        exit(1);
 
-        // exec command
-        execvp(args1[0],args1); // executes first command
-        perror("first command failed to execute");
     }
     if (p1>0){
         waitpid(p1,NULL,0); // waits for child to finish
     }
 
     pid_t p2 = fork();
-    if (p2 == 0){ // child
+    if (p2 == 0){ // child2
+        //opening temp again so i can read it
+        int temp_f = open("temp.txt", O_RDONLY,0);
+        if(temp_f==-1)err();
 
-        int d = 0;
-        while (args1[d]!=NULL){
-            if(strcmp(args2[d],">")==0){
-                redirect(args2);
-            }
-            else d++;
-        }
+        dup2(temp_f, STDIN_FILENO);
+        close(temp_f);
 
-        // open temp to read output of first command
-        int temp = open("temp.txt", O_RDONLY);
-        if (temp == -1) err();
-        // output into stdin, then execute
-        dup2(temp, STDIN_FILENO);
-        execvp(args2[0],args2);
-        perror("second command failed to execute");
+        execvp(args2[0], args2);
+        perror("lalala");
+        exit(1);
+
     }
     if (p2>0){
         waitpid(p2,NULL,0); // waits for child to finish
@@ -143,4 +142,3 @@ void piping(char** args){
 
     remove("temp.txt"); // looked this up
 }
-
