@@ -12,9 +12,7 @@
 int err();
 int main(int argc, char *argv[]);
 char ** prompt();
-int isCommand(char ** args);
 int cd(char ** args);
-void printchars(char ** arr);
 void piping(char** args);
 
 #endif
