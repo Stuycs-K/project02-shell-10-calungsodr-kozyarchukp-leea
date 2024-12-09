@@ -13,6 +13,5 @@ int err();
 int main(int argc, char *argv[]);
 char ** prompt();
 int cd(char ** args);
-void piping(char** args);
 
 #endif

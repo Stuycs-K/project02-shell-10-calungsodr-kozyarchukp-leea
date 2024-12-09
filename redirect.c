@@ -22,7 +22,6 @@ void redirect(char** args){
     int backup_stdin = dup(STDIN_FILENO);
     int backup_stdout = dup(STDOUT_FILENO);
 
-
     for (int i = 0; args[i]!=NULL;i++){
         // finding <
         if (strcmp(args[i],"<")==0){
