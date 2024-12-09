@@ -21,9 +21,8 @@ Bugs and issues:
 - N/A
   
 Function headers:  
-//takes string line, puts all the pieces into argary separated by spaces
-
-void parse_args( char * line, char ** arg_ary );
+//takes string line, puts all the pieces into argary separated by spaces  
+void parse_args( char * line, char ** arg_ary );  
 //prints errno  
 void err();  
 //prints terminal, parses, calls pipes and redirect when necessary  
