@@ -4,7 +4,7 @@
 #include "pipe.h"
 
 //prints errno
-int err(){
+void err(){
   printf("Error %d: %s\n", errno, strerror(errno));
   //exit(1);
 }

@@ -20,10 +20,10 @@ Bugs and issues:
 - N/A
   
 Function headers:  
-//takes string line, puts all the pieces into argary separated by spaces  
-void parse_args( char * line, char ** arg_ary )  
+//takes string line, puts all the pieces into argary separated by spaces
+void parse_args( char * line, char ** arg_ary );
 //prints errno  
-int err();  
+void err();  
 //prints terminal, parses, calls pipes and redirect when necessary  
 int main(int argc, char * argv[]);  
 //prints cwd path and parses user input. returns array of commands from stdin  
