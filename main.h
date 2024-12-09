@@ -9,7 +9,7 @@
 #include <sys/stat.h>
 #include <errno.h>
 #include <sys/wait.h>
-int err();
+void err();
 int main(int argc, char *argv[]);
 char ** prompt();
 int cd(char ** args);
