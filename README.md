@@ -23,28 +23,33 @@ Bugs and issues:
 Function headers:  
 //takes string line, puts all the space-separated pieces into argary  
 void parse_args( char * line, char ** arg_ary );  
+
 //prints errno  
 void err();  
+
 //prints terminal, parses, calls pipes and redirect when necessary  
 int main(int argc, char * argv[]);  
+
 //prints cwd path and parses user input. returns array of commands from user input  
 char ** prompt();  
+
 //executes a pipe given char** args (user input separated into an array)  
 void piping(char** args);
+
 //executes cd given char ** args (user input separated into an array). returns 0 on success  
 int cd(char ** args);     
+
 // prints char **  
 void printchars(char ** arr);    
+
 //takes int ind and char** args, removes index ind from args  
 void removeArg(char** args, int ind);  
-//executes redirect, given char** args (user input separated into an array) 
 
+//executes redirect, given char** args (user input separated into an array)   
 void redirect(char** args); 
 
-//takes in char **, iterates through and returns the index of "<" if found and 0 otherwise 
-
+//takes in char **, iterates through and returns the index of "<" if found and 0 otherwise   
 int containsA(char ** args); 
 
-//takes in char **, iterates through and returns the index of ">" if found and 0 otherwise 
-
+//takes in char **, iterates through and returns the index of ">" if found and 0 otherwise   
 int containsB(char ** args);
