@@ -13,7 +13,7 @@ void removeArg(char** args, int ind){
     }
 }
 
-//executes redirect, given stdin
+//executes redirect given char** args (user input separated into an array)
 void redirect(char** args){
 
     // establish files
@@ -46,16 +46,11 @@ void redirect(char** args){
     pid_t p = fork();
 
     if (p == 0){ // child process in fork
-
-      //  fflush(stdout);
-
-        // DOES NOT WORK YET
         // this means that it looks like this: a < _.txt
         // redirect stuff from the file taken from (in read_input) to run into program a
         if (input_file != NULL){
             int read_input = open(input_file, O_RDONLY, 0);
             if (read_input==-1) err();
-          //  backup_stdin = dup(STDIN_FILENO);
             dup2(read_input, STDIN_FILENO);
             close(read_input);
 
@@ -66,9 +61,6 @@ void redirect(char** args){
         if (output_file != NULL){
             int redirect_to_output = open(output_file,  O_WRONLY | O_CREAT | O_TRUNC, 0644);
             if (redirect_to_output==-1) err();
-
-          //  backup_stdout = dup(STDOUT_FILENO);
-          //  fflush(stdout);
             dup2(redirect_to_output, STDOUT_FILENO);
             close(redirect_to_output);
         }

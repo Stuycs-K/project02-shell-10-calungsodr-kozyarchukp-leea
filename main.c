@@ -5,8 +5,7 @@
 
 //prints errno
 void err(){
-  printf("Error %d: %s\n", errno, strerror(errno));
-  //exit(1);
+  if (errno > 0) printf("Error %d: %s\n", errno, strerror(errno));
 }
 
 //prints terminal, parses, calls pipes and redirect when necessary
@@ -65,7 +64,7 @@ int main(int argc, char *argv[]) {
 }
 
 
-//prints cwd path and parses user input. returns array of commands from stdin
+//prints cwd path and parses user input. returns array of commands from user input
 char ** prompt(){
   char buffer[256];
   getcwd(buffer, 256);
@@ -87,7 +86,7 @@ char ** prompt(){
   return commands;
 }
 
-//executes cd given char ** args which is stdin
+//executes cd given char ** args (user input separated into an array). returns 0 on success
 int cd(char ** args){
   if ((strcmp(args[0], "cd")) || (args[1] == NULL) || (args[2]!=NULL)){
     printf("this shouldn't happen. usage: cd <directory>.\n");
