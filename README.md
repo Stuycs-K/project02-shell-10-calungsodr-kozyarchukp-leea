@@ -38,8 +38,13 @@ void printchars(char ** arr);
 //takes int ind and char** args, removes index ind from args  
 void removeArg(char** args, int ind);  
 //executes redirect, given char** args (user input separated into an array) 
+
 void redirect(char** args); 
+
 //takes in char **, iterates through and returns the index of "<" if found and 0 otherwise 
+
 int containsA(char ** args); 
+
 //takes in char **, iterates through and returns the index of ">" if found and 0 otherwise 
+
 int containsB(char ** args);
